@@ -7,8 +7,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class PriceNotifier:
-    def __init__(self, chromedriver_path, product_urls, target_prices):
-        self.tracker = PriceTracker(chromedriver_path, product_urls, target_prices)
+    def __init__(self, product_urls, target_prices):
+        self.tracker = PriceTracker(product_urls, target_prices)
 
     def run(self):
         self.tracker.check_prices()

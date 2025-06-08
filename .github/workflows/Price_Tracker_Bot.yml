@@ -1,7 +1,7 @@
 name: Price Tracker
 
 on:
-  workflow_dispatch:  # اجرای دستی از بخش Actions
+  workflow_dispatch:
 
 jobs:
   run-price-checker:
@@ -26,37 +26,6 @@ jobs:
           echo RECEIVER_EMAIL=${{ secrets.RECEIVER_EMAIL }} >> .env
           echo SENDER_EMAIL=${{ secrets.SENDER_EMAIL }} >> .env
           echo GOOGLE_ACC_PASSWORD=${{ secrets.GOOGLE_ACC_PASSWORD }} >> .env
-      
-      
-      - name: Install matching ChromeDriver
-        shell: pwsh
-        run: |
-          $chromePath = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
-          $chromeVersion = (Get-Item $chromePath).VersionInfo.ProductVersion
-          Write-Host "Chrome version: $chromeVersion"
-          $versionParts = $chromeVersion -split '\.'
-          $majorVersion = $versionParts[0]
 
-          $url = "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$majorVersion"
-          Write-Host "Fetching ChromeDriver version from $url"
-
-          try {
-              $chromedriverVersion = (Invoke-WebRequest -Uri $url -UseBasicParsing).Content.Trim()
-              Write-Host "ChromeDriver version to download: $chromedriverVersion"
-          }
-          catch {
-              Write-Warning "Version-specific ChromeDriver not found, trying latest version..."
-              $url = "https://chromedriver.storage.googleapis.com/LATEST_RELEASE"
-              $chromedriverVersion = (Invoke-WebRequest -Uri $url -UseBasicParsing).Content.Trim()
-              Write-Host "Latest ChromeDriver version to download: $chromedriverVersion"
-          }
-
-          $zipUrl = "https://chromedriver.storage.googleapis.com/$chromedriverVersion/chromedriver_win32.zip"
-          Write-Host "Downloading ChromeDriver from $zipUrl"
-          Invoke-WebRequest -Uri $zipUrl -OutFile "chromedriver.zip"
-
-          Expand-Archive chromedriver.zip -DestinationPath src -Force
-          Remove-Item chromedriver.zip
-          
       - name: Run price tracker
         run: python src/main.py

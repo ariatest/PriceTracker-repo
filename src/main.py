@@ -29,5 +29,5 @@ if __name__ == "__main__":
         "پاوربانک وایرلس باسئوس مدل PPCXZ10 با ظرفیت 10000mAh" : 1800000
     }
 
-    notifier = PriceNotifier(chromedriver_path, product_urls, target_prices)
+    notifier = PriceNotifier(product_urls, target_prices)
     notifier.run()

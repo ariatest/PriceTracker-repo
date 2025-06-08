@@ -3,6 +3,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 import time
 import json
+from webdriver_manager.chrome import ChromeDriverManager
 
 def parse_price(price_text):
     price_text = price_text.replace('تومان', '').replace(',', '').strip()
@@ -14,8 +15,8 @@ def parse_price(price_text):
 
 
 class PriceTracker:
-    def __init__(self, chromedriver_path, product_urls, target_prices):
-        service = Service(chromedriver_path)
+    def __init__(self, product_urls, target_prices):
+        service = Service(ChromeDriverManager().install())
         self.driver = webdriver.Chrome(service=service)
         self.product_urls = product_urls
         self.target_prices = target_prices
