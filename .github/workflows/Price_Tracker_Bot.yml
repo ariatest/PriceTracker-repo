@@ -41,21 +41,22 @@ jobs:
           Write-Host "Fetching ChromeDriver version from $url"
 
           try {
-            $chromedriverVersion = (Invoke-WebRequest -Uri $url -UseBasicParsing).Content.Trim()
-            Write-Host "ChromeDriver version to download: $chromedriverVersion"
-
-            $zipUrl = "https://chromedriver.storage.googleapis.com/$chromedriverVersion/chromedriver_win32.zip"
-            Write-Host "Downloading ChromeDriver from $zipUrl"
-            Invoke-WebRequest -Uri $zipUrl -OutFile "chromedriver.zip"
-
-            Expand-Archive chromedriver.zip -DestinationPath src -Force
-            Remove-Item chromedriver.zip
+              $chromedriverVersion = (Invoke-WebRequest -Uri $url -UseBasicParsing).Content.Trim()
+              Write-Host "ChromeDriver version to download: $chromedriverVersion"
           }
           catch {
-            Write-Error "Failed to download ChromeDriver: $_"
-            exit 1
+              Write-Warning "Version-specific ChromeDriver not found, trying latest version..."
+              $url = "https://chromedriver.storage.googleapis.com/LATEST_RELEASE"
+              $chromedriverVersion = (Invoke-WebRequest -Uri $url -UseBasicParsing).Content.Trim()
+              Write-Host "Latest ChromeDriver version to download: $chromedriverVersion"
           }
 
+          $zipUrl = "https://chromedriver.storage.googleapis.com/$chromedriverVersion/chromedriver_win32.zip"
+          Write-Host "Downloading ChromeDriver from $zipUrl"
+          Invoke-WebRequest -Uri $zipUrl -OutFile "chromedriver.zip"
 
+          Expand-Archive chromedriver.zip -DestinationPath src -Force
+          Remove-Item chromedriver.zip
+          
       - name: Run price tracker
         run: python src/main.py
