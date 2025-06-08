@@ -32,6 +32,11 @@ GOOGLE_ACC_PASSWORD=your-app-password
 
 نکات مهم:
 * GOOGLE_ACC_PASSWORD باید رمز عبور برنامه‌ای (App Password) جیمیل شما باشد، نه پسورد اصلی.
+
+```markdown
+https://sites.google.com/chromium.org/driver/
+```
+
 * برای ساخت App Password باید ورود دو مرحله‌ای Gmail را فعال کرده باشید و از مسیر زیر اقدام کنید: https://myaccount.google.com/apppasswords
 ## 🖥️ نحوه استفاده
 ```bash
