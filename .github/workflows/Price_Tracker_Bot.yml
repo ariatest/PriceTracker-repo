@@ -28,24 +28,34 @@ jobs:
           echo GOOGLE_ACC_PASSWORD=${{ secrets.GOOGLE_ACC_PASSWORD }} >> .env
       
       
-      - name: Get Chrome version
-        id: get_chrome_version
-        run: |
-          $chromeVersion = (Get-Item 'C:\Program Files\Google\Chrome\Application\chrome.exe').VersionInfo.ProductVersion
-          Write-Host "Chrome version: $chromeVersion"
-          echo "CHROME_VERSION=$chromeVersion" >> $GITHUB_ENV
-
       - name: Install matching ChromeDriver
+        shell: pwsh
         run: |
-          $versionParts = $Env:CHROME_VERSION -split '\.'
+          $chromePath = 'C:\Program Files\Google\Chrome\Application\chrome.exe'
+          $chromeVersion = (Get-Item $chromePath).VersionInfo.ProductVersion
+          Write-Host "Chrome version: $chromeVersion"
+          $versionParts = $chromeVersion -split '\.'
           $majorVersion = $versionParts[0]
+
           $url = "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$majorVersion"
-          $chromedriverVersion = (Invoke-WebRequest -Uri $url).Content.Trim()
-          Write-Host "Installing ChromeDriver version $chromedriverVersion"
-          $zipUrl = "https://chromedriver.storage.googleapis.com/$chromedriverVersion/chromedriver_win32.zip"
-          Invoke-WebRequest -Uri $zipUrl -OutFile "chromedriver.zip"
-          Expand-Archive chromedriver.zip -DestinationPath src
-          Remove-Item chromedriver.zip
+          Write-Host "Fetching ChromeDriver version from $url"
+
+          try {
+            $chromedriverVersion = (Invoke-WebRequest -Uri $url -UseBasicParsing).Content.Trim()
+            Write-Host "ChromeDriver version to download: $chromedriverVersion"
+
+            $zipUrl = "https://chromedriver.storage.googleapis.com/$chromedriverVersion/chromedriver_win32.zip"
+            Write-Host "Downloading ChromeDriver from $zipUrl"
+            Invoke-WebRequest -Uri $zipUrl -OutFile "chromedriver.zip"
+
+            Expand-Archive chromedriver.zip -DestinationPath src -Force
+            Remove-Item chromedriver.zip
+          }
+          catch {
+            Write-Error "Failed to download ChromeDriver: $_"
+            exit 1
+          }
+
 
       - name: Run price tracker
         run: python src/main.py
