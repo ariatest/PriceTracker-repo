@@ -28,4 +28,4 @@ jobs:
           echo GOOGLE_ACC_PASSWORD=${{ secrets.GOOGLE_ACC_PASSWORD }} >> .env
 
       - name: Run price tracker
-        run: python main.py
+        run: python src/main.py
