@@ -4,14 +4,22 @@ from price_notifier import PriceNotifier
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
+
 load_dotenv()
+
+chrome_options = Options()
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--disable-dev-shm-usage')
+
 
 def format_price(num):
     return f"{num:,}"
 
 if __name__ == "__main__":
     service = Service(ChromeDriverManager().install())
-    driver = webdriver.Chrome(service=service)
+    driver = webdriver.Chrome(service=service, options=chrome_options)
 
     product_urls = [
         "https://torob.com/p/a94944c6-5a62-445e-8292-e88dc82f9968/",
@@ -23,7 +31,7 @@ if __name__ == "__main__":
     ]
 
     target_prices = {
-        "ساعت هوشمند هوآوی مدل FIT 3": 6500000,
+        "ساعت هوشمند هوآوی مدل FIT 3": 7500000,
         "ساعت هوشمند Xiaomi Watch S3 (نسخه گلوبال)": 8000000,
         "پاوربانک انکر مدل PowerCore 20K A1336 200W ظرفیت 20000mAh": 7500000,
         "کوله لپ تاپ 15.6 اینچی شیائومی مدل Business 2": 1100000,
