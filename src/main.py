@@ -1,11 +1,11 @@
 import os
+import tempfile
 from dotenv import load_dotenv
 from price_notifier import PriceNotifier
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
-
 load_dotenv()
 
 chrome_options = Options()
@@ -13,6 +13,9 @@ chrome_options.add_argument('--headless')
 chrome_options.add_argument('--no-sandbox')
 chrome_options.add_argument('--disable-dev-shm-usage')
 
+# ✅ اضافه کردن مسیر یکتا برای user-data-dir
+user_data_dir = tempfile.mkdtemp()
+chrome_options.add_argument(f'--user-data-dir={user_data_dir}')
 
 def format_price(num):
     return f"{num:,}"
