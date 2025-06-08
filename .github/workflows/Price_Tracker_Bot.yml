@@ -26,6 +26,13 @@ jobs:
           echo RECEIVER_EMAIL=${{ secrets.RECEIVER_EMAIL }} >> .env
           echo SENDER_EMAIL=${{ secrets.SENDER_EMAIL }} >> .env
           echo GOOGLE_ACC_PASSWORD=${{ secrets.GOOGLE_ACC_PASSWORD }} >> .env
+      
+      
+      - name: Download ChromeDriver
+        run: |
+          curl -L -o src/chromedriver.zip https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_win32.zip
+          powershell -Command "Expand-Archive src/chromedriver.zip -DestinationPath src/"
+          del src/chromedriver.zip
 
       - name: Run price tracker
         run: python src/main.py
