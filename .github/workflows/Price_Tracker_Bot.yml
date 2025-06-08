@@ -28,11 +28,24 @@ jobs:
           echo GOOGLE_ACC_PASSWORD=${{ secrets.GOOGLE_ACC_PASSWORD }} >> .env
       
       
-      - name: Download ChromeDriver
+      - name: Get Chrome version
+        id: get_chrome_version
         run: |
-          curl -L -o src/chromedriver.zip https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_win32.zip
-          powershell -Command "Expand-Archive src/chromedriver.zip -DestinationPath src/"
-          del src/chromedriver.zip
+          $chromeVersion = (Get-Item 'C:\Program Files\Google\Chrome\Application\chrome.exe').VersionInfo.ProductVersion
+          Write-Host "Chrome version: $chromeVersion"
+          echo "CHROME_VERSION=$chromeVersion" >> $GITHUB_ENV
+
+      - name: Install matching ChromeDriver
+        run: |
+          $versionParts = $Env:CHROME_VERSION -split '\.'
+          $majorVersion = $versionParts[0]
+          $url = "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$majorVersion"
+          $chromedriverVersion = (Invoke-WebRequest -Uri $url).Content.Trim()
+          Write-Host "Installing ChromeDriver version $chromedriverVersion"
+          $zipUrl = "https://chromedriver.storage.googleapis.com/$chromedriverVersion/chromedriver_win32.zip"
+          Invoke-WebRequest -Uri $zipUrl -OutFile "chromedriver.zip"
+          Expand-Archive chromedriver.zip -DestinationPath src
+          Remove-Item chromedriver.zip
 
       - name: Run price tracker
         run: python src/main.py
