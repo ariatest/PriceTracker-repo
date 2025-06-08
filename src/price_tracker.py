@@ -3,7 +3,6 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 import time
 import json
-import os
 
 def parse_price(price_text):
     price_text = price_text.replace('تومان', '').replace(',', '').strip()
