@@ -1,0 +1,28 @@
+# Ignore environment files
+.env
+
+# Ignore ChromeDriver executable
+chromedriver.exe
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment folders
+venv/
+env/
+ENV/
+.venv/
+.env/
+
+# IDE/editor files
+.vscode/
+.idea/
+
+# Log files
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
