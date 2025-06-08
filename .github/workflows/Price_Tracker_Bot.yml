@@ -27,5 +27,10 @@ jobs:
           echo SENDER_EMAIL=${{ secrets.SENDER_EMAIL }} >> .env
           echo GOOGLE_ACC_PASSWORD=${{ secrets.GOOGLE_ACC_PASSWORD }} >> .env
 
+      - name: Verify Chrome installation
+        run: |
+          echo "Checking Chrome version..."
+          google-chrome --version || (echo "Chrome not found" && exit 1)
+
       - name: Run price tracker
         run: python src/main.py

@@ -5,6 +5,9 @@ import time
 import json
 from webdriver_manager.chrome import ChromeDriverManager
 
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 def parse_price(price_text):
     price_text = price_text.replace('تومان', '').replace(',', '').strip()
     if 'تا' in price_text:
@@ -25,20 +28,45 @@ class PriceTracker:
     def check_prices(self):
         for url in self.product_urls:
             self.driver.get(url)
-            time.sleep(2)
 
             try:
-                script_tag = self.driver.find_element(By.CSS_SELECTOR, 'script[type="application/ld+json"]')
-                data = json.loads(script_tag.get_attribute('innerHTML'))
-            except Exception as e:
-                print(f"خطا در گرفتن اطلاعات محصول در {url}: {e}")
-                continue
+                wait = WebDriverWait(self.driver, 10)  # حداکثر ۱۰ ثانیه صبر می‌کند
+                script_tags = wait.until(
+                    EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'script[type="application/ld+json"]'))
+                )
 
-            product_name = data.get("name", "نام محصول نامشخص")
+                product_data = None
+                for tag in script_tags:
+                    try:
+                        data = json.loads(tag.get_attribute('innerHTML'))
+                        # اگر data یک لیست باشد
+                        if isinstance(data, list):
+                            for item in data:
+                                if item.get('@type') == 'Product':
+                                    product_data = item
+                                    break
+                        else:
+                            if data.get('@type') == 'Product':
+                                product_data = data
+                                break
+                    except Exception:
+                        continue
+
+                if product_data is None:
+                    print(f"❌ داده محصول در {url} یافت نشد.")
+                    print("=" * 40)
+                    continue
+
+            except Exception as e:
+                print(f"❌ خطا در گرفتن یا پارس کردن JSON در {url}: {e}")
+                print("=" * 40)
+                continue  # به URL بعدی برو
+
+            product_name = product_data.get("name", "نام محصول نامشخص")
             price_text = "قیمت یافت نشد"
 
-            if "offers" in data:
-                offers = data["offers"]
+            if "offers" in product_data:
+                offers = product_data["offers"]
                 if isinstance(offers, dict):
                     if "price" in offers:
                         price_text = f"{self.format_price(int(offers['price']) // 10)} تومان"
@@ -59,14 +87,15 @@ class PriceTracker:
                 target_price = self.target_prices[product_name]
                 if current_price < target_price:
                     print(f"⚠️ قیمت محصول '{product_name}' کاهش یافته است!")
-                    print(f"قیمت فعلی: {self.format_price(current_price)} تومان، قیمت هدف: {self.format_price(target_price)} تومان")
+                    print(
+                        f"قیمت فعلی: {self.format_price(current_price)} تومان، قیمت هدف: {self.format_price(target_price)} تومان")
                     print(f"لینک محصول: {url}")
                     self.discounted_products.append({
                         "name": product_name,
                         "current_price": current_price,
                         "target_price": target_price,
                         "url": url,
-                        "price_text": price_text  # اضافه کردن این خط
+                        "price_text": price_text
                     })
             print("=" * 40)
 

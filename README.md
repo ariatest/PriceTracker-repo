@@ -20,9 +20,10 @@
 pip install -r requirements.txt
 ```
 
-3. درایور مرورگر chrome را دانلود کرده (chromedriver.exe) و در مسیر main.py قرار دهید
-https://sites.google.com/chromium.org/driver/
-5. فایل `.env` را در ریشه پروژه ایجاد کرده و اطلاعات ایمیل را طبق راهنمای زیر وارد کنید:
+[//]: # (3. درایور مرورگر chrome را دانلود کرده &#40;chromedriver.exe&#41; و در مسیر main.py قرار دهید)
+
+[//]: # (https://sites.google.com/chromium.org/driver/)
+3. فایل `.env` را در ریشه پروژه ایجاد کرده و اطلاعات ایمیل را طبق راهنمای زیر وارد کنید:
 
 ```env
 RECEIVER_EMAIL=your-recipient@example.com

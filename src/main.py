@@ -1,15 +1,17 @@
 import os
 from dotenv import load_dotenv
 from price_notifier import PriceNotifier
-
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 load_dotenv()
 
 def format_price(num):
     return f"{num:,}"
 
 if __name__ == "__main__":
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    chromedriver_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "chromedriver.exe")
+    service = Service(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=service)
 
     product_urls = [
         "https://torob.com/p/a94944c6-5a62-445e-8292-e88dc82f9968/",
