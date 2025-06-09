@@ -18,11 +18,10 @@ def parse_price(price_text):
 
 
 class PriceTracker:
-    def __init__(self, product_urls, target_prices):
-        service = Service(ChromeDriverManager().install())
-        self.driver = webdriver.Chrome(service=service)
+    def __init__(self, product_urls, target_prices, driver):
         self.product_urls = product_urls
         self.target_prices = target_prices
+        self.driver = driver
         self.discounted_products = []  # برای ذخیره محصولات با قیمت پایین‌تر از هدف
 
     def check_prices(self):
