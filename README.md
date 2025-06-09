@@ -37,7 +37,7 @@ GOOGLE_ACC_PASSWORD=your-app-password
 * برای ساخت App Password باید ورود دو مرحله‌ای Gmail را فعال کرده باشید و از مسیر زیر اقدام کنید: https://myaccount.google.com/apppasswords
 ## 🖥️ نحوه استفاده
 ```bash
-python main.py
+python src/main.py
 ```
 
 ## 🧪 شخصی‌سازی لیست محصولات
